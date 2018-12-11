@@ -27,7 +27,7 @@
               <el-form-item size="medium" label="Epoch">
                 <el-input v-model="params.epoch"></el-input>
               </el-form-item>
-              <el-form-item size="medium" label="Learning rate">
+              <el-form-item size="medium" label="Learning Rate">
                 <el-input v-model="params.lRate"></el-input>
               </el-form-item>
               <el-form-item size="medium" label="Activation">
@@ -36,7 +36,7 @@
               <el-form-item size="medium" label="Regularization">
                 <el-input v-model="params.reg"></el-input>
               </el-form-item>
-              <el-form-item size="medium" label="Regularization rate">
+              <el-form-item size="medium" label="Regularization Rate">
                 <el-input v-model="params.regRate"></el-input>
               </el-form-item>
             </el-form>
@@ -94,7 +94,10 @@
 export default {
   data(){
     return{
+      // content部分的当前选中 loss/accuracy
       activeName: 'loss',
+      
+      // 下拉菜单数据
       models: [
         {
           label: 'model1',
@@ -123,6 +126,9 @@ export default {
           value: 'dset3'
         },
       ],
+
+
+      // 表单数据
       params: {
         model: '',
         dataset: '',
@@ -183,5 +189,8 @@ export default {
 }
 #mybtn{
   text-align: center;
+}
+label.el-form-item__label{
+  font-size:13px
 }
 </style>
