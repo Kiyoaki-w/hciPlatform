@@ -1,12 +1,15 @@
-# renjijiaohu
+# 人机交互
 
-> ren ji jiao hu
+> 人机交互前端
 
 #### Build Setup
 
 ``` bash
+# install cnpm
+npm install -g cnpm --registry=https://registry.npm.taobao.org
+
 # install dependencies
-npm install
+cnpm install
 
 # serve with hot reload at localhost:9080
 npm run dev
