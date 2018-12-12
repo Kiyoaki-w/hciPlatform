@@ -10,13 +10,13 @@
           <el-col :span="24">
             <el-form :label-position="right" label-width="140px" :model="params">
               <el-form-item size="medium" label="Model">
-                <el-select v-model="params.model" placeholder="check one model">
+                <el-select v-model="params.model" placeholder="check a model">
                   <el-option v-for="i in models" :value="i.value" :label="i.label"></el-option>
                 </el-select>
               </el-form-item>
               
               <el-form-item size="medium" label="Dataset">
-                <el-select v-model="params.dataset" placeholder="check one dataset">
+                <el-select v-model="params.dataset" placeholder="check a dataset">
                   <el-option v-for="i in datasets" :value="i.value" :label="i.label"></el-option>
                 </el-select>
               </el-form-item>
@@ -41,7 +41,10 @@
               </el-form-item>
             </el-form>
             <el-row id="mybtn">
-              <el-col :span="24">
+              <el-col :span="12">
+                <el-button type="info" @click="toHome">Back Home</el-button>
+              </el-col>
+              <el-col :span="12">
                 <el-button type="success" @click="">Start Training</el-button>
               </el-col>
             </el-row>
@@ -141,6 +144,9 @@ export default {
     }
   },
   methods:{
+    toHome(){
+      this.$router.push('/');
+    },
     toLoss(){
       // 改变按钮颜色
       document.getElementById("subtitle1").style.backgroundColor = "#528e6e";
@@ -153,6 +159,9 @@ export default {
       document.getElementById("subtitle2").style.backgroundColor = "#528e6e";
       this.activeName = 'accuracy';
     }
+  },
+  mounted(){
+
   }
 }
 </script>

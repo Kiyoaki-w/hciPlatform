@@ -20,7 +20,7 @@ function createWindow () {
   mainWindow = new BrowserWindow({
     height: 700,
     useContentSize: true,
-    width: 1200,
+    width: 1000,
     title: '人机交互前端',
     frame: false,
     // fullscreen: true,

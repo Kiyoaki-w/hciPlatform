@@ -5,9 +5,9 @@
       <el-aside id="content">
         <router-view></router-view>
       </el-aside>
-      <el-aside id="aside" :width="asideWidth+'px'">
+      <!-- <el-aside v-if="false" id="aside" :width="asideWidth+'px'">
         <modelList />
-      </el-aside>
+      </el-aside> -->
     </el-container>
   </el-container>
 </template>
@@ -27,9 +27,7 @@
       }
     },
     methods: {
-      open (link) {
-        // this.$electron.shell.openExternal(link)
-      }
+
     },
     mounted(){
       // 设置各部分高度
@@ -37,11 +35,14 @@
       document.getElementById("mainHeader").style.height = this.headerHeight + 'px';
       document.getElementById("mainHeader").style.lineHeight = this.headerHeight + 'px';
       document.getElementById("mainBody").style.height = clientHeight - this.headerHeight + 'px';
-      // 设置各部分宽度
+      // // 设置各部分宽度 reserved
+      // var clientWidth = document.body.clientWidth;
+      // document.getElementById("content").style.width = clientWidth - this.asideWidth + 'px';
+      
+      // 设置各部分宽度 reserved
       var clientWidth = document.body.clientWidth;
-      document.getElementById("content").style.width = clientWidth - this.asideWidth + 'px';
-      // 挂载时直接进入training页面
-      this.$router.push('training');
+      document.getElementById("content").style.width = clientWidth + 'px';
+
     }
   }
 </script>
