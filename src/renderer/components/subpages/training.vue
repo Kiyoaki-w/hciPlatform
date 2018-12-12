@@ -76,15 +76,15 @@
           </el-col>
         </el-row>
 
-        <!-- content -->
-        <el-row v-if="activeName==='loss'">
+        <!-- content  v-if被改成v-show了 使用v-if的话不会切换图标 -->
+        <el-row  v-show="activeName==='loss'">
           <el-col :span="24">
-            Loss Img
+            <div id="lossChart"> </div>
           </el-col>
         </el-row>
-        <el-row v-if="activeName==='accuracy'">
+        <el-row v-show="activeName==='accuracy'">
           <el-col :span="24">
-            Accuracy Img
+            <div id="accChart"> </div>
           </el-col>
         </el-row>
       </el-col>
@@ -151,18 +151,55 @@ export default {
       // 改变按钮颜色
       document.getElementById("subtitle1").style.backgroundColor = "#528e6e";
       document.getElementById("subtitle2").style.backgroundColor = "#a5c3b6";
+
       // 标记当前选中为loss
       this.activeName = 'loss';
     },
     toAccuracy(){
       document.getElementById("subtitle1").style.backgroundColor = "#a5c3b6";
       document.getElementById("subtitle2").style.backgroundColor = "#528e6e";
+ 
       this.activeName = 'accuracy';
     }
   },
   mounted(){
+    var echarts = require('echarts');
 
-  }
+    var lossChart = echarts.init(document.getElementById('lossChart'));
+
+    lossChart.setOption({
+        title: {
+            text: 'Loss'
+        },
+        tooltip: {},
+        xAxis: {
+            data: ['0', '1', '2', '3', '4', '5']
+        },
+        yAxis: {},
+        series: [{
+            name: 'cross entropy',
+            type: 'line',
+            data: [5, 20, 36, 10, 10, 20]
+        }]
+    });
+    var accChart = echarts.init(document.getElementById('accChart'));
+
+    accChart.setOption({
+        title: {
+            text: 'accuracy'
+        },
+        tooltip: {},
+        xAxis: {
+            data: ['0', '1', '2', '3', '4', '5']
+        },
+        yAxis: {},
+        series: [{
+            name: '%',
+            type: 'line',
+            data: [5, 10, 26, 30, 40, 50]
+        }]
+    });
+  }   //初步添加了两个chart
 }
 </script>
 
@@ -193,6 +230,17 @@ export default {
   margin-bottom: 10px;
   margin-top:20px
 }
+#lossChart{
+  margin-top:60px;
+  width:600px;
+  height: 400px;
+}
+#accChart{
+  margin-top:60px;
+  width:600px;
+  height: 400px;
+}
+
 #btndiv{
   cursor: pointer;
 }
