@@ -6,10 +6,13 @@
 
 ``` bash
 # install cnpm
-npm install -g cnpm --registry=https://registry.npm.taobao.org
+sudo npm install -g cnpm --registry=https://registry.npm.taobao.org
 
 # install dependencies
 cnpm install
+
+# install element-ui
+cnpm install element-ui -S
 
 # serve with hot reload at localhost:9080
 npm run dev
@@ -17,6 +20,8 @@ npm run dev
 # build electron application for production
 npm run build
 
+# build in cn
+ELECTRON_MIRROR=https://npm.taobao.org/mirrors/electron/ npm run build
 
 ```
 

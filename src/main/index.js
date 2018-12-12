@@ -27,6 +27,7 @@ function createWindow () {
     webPreferences: {
       webSecurity: false,
       // devTools: false,
+      resizable: false
     },
     autoHideMenuBar: true,
 
