@@ -129,8 +129,18 @@ export default {
           value: 'dset3'
         },
       ],
-
-
+      lossDataX:[
+        '0', '1', '2', '3', '4', '5'
+      ],
+      lossDataY:[
+        5, 20, 36, 10, 10, 20
+      ],
+      accDataX:[
+        '0', '1', '2', '3', '4', '5'
+      ],
+      accDataY:[
+        5, 10, 26, 30, 40, 50
+      ],
       // 表单数据
       params: {
         model: '',
@@ -144,6 +154,43 @@ export default {
     }
   },
   methods:{
+    getAccuracy(){
+      axios.get('/api/train/accuracy', {
+          params: {
+            mode_id: 12345
+          }
+        })
+        .then(function (response) {
+          this.accDataX = response[0]
+          this.accDataX = response[1]
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+    },
+    getLoss(){
+      axios.get('/api/train/loss', {
+          params: {
+            mode_id: 12345
+          }
+        })
+        .then(function (response) {
+          this.lossDataX = response[0]
+          this.lossDataX = response[1]
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+    },
+    startTrain(){
+      axios.post('/api/train/start', this.params)
+        .then(function (response) {
+          console.log(response);
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+    },
     toHome(){
       this.$router.push('/');
     },
@@ -173,13 +220,13 @@ export default {
         },
         tooltip: {},
         xAxis: {
-            data: ['0', '1', '2', '3', '4', '5']
+            data: this.lossDataX
         },
         yAxis: {},
         series: [{
             name: 'cross entropy',
             type: 'line',
-            data: [5, 20, 36, 10, 10, 20]
+            data: this.lossDataY
         }]
     });
     var accChart = echarts.init(document.getElementById('accChart'));
@@ -190,13 +237,13 @@ export default {
         },
         tooltip: {},
         xAxis: {
-            data: ['0', '1', '2', '3', '4', '5']
+            data: this.accDataX
         },
         yAxis: {},
         series: [{
             name: '%',
             type: 'line',
-            data: [5, 10, 26, 30, 40, 50]
+            data: this.accDataY
         }]
     });
   }   //初步添加了两个chart

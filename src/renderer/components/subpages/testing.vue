@@ -131,6 +131,24 @@ export default {
     }
   },
   methods:{
+    getModels(){
+      axios.get('/models')
+        .then(function (response) {
+          this.models = response
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+    },
+    getDatasets(){
+      axios.get('/datasets')
+        .then(function (response) {
+          this.datasets = response
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+    },
     toHome(){
       this.$router.push('/');
     },
