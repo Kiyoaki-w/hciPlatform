@@ -129,16 +129,16 @@ export default {
           value: 'dset3'
         },
       ],
-      lossDataX:[
+      lossDataX: [
         '0', '1', '2', '3', '4', '5'
       ],
-      lossDataY:[
+      lossDataY: [
         5, 20, 36, 10, 10, 20
       ],
-      accDataX:[
+      accDataX: [
         '0', '1', '2', '3', '4', '5'
       ],
-      accDataY:[
+      accDataY: [
         5, 10, 26, 30, 40, 50
       ],
       // 表单数据
@@ -155,30 +155,61 @@ export default {
   },
   methods:{
     getAccuracy(){
-      axios.get('/api/train/accuracy', {
-          params: {
-            mode_id: 12345
-          }
-        })
+      var echarts = require('echarts');
+      var accChart = echarts.init(document.getElementById('accChart'));
+
+      var self = this
+      this.$http.get('http://127.0.0.1:1234/train/accuracy/233',{crossdomain: true})
         .then(function (response) {
-          this.accDataX = response[0]
-          this.accDataX = response[1]
+          self.accDataX = response["data"][0]
+          self.accDataY = response["data"][1]
+          accChart.setOption({
+              title: {
+                  text: 'accuracy'
+              },
+              tooltip: {},
+              xAxis: {
+                  data: self.accDataX
+              },
+              yAxis: {},
+              series: [{
+                  name: '%',
+                  type: 'line',
+                  data: self.accDataY
+              }]
+          });
         })
-        .catch(function (error) {
+        .catch((error)=> {
           console.log(error);
         });
     },
     getLoss(){
-      axios.get('/api/train/loss', {
-          params: {
-            mode_id: 12345
-          }
-        })
+      var echarts = require('echarts');
+
+      var lossChart = echarts.init(document.getElementById('lossChart'));
+      var self = this
+      this.$http.get('http://127.0.0.1:1234/train/loss/233')
         .then(function (response) {
-          this.lossDataX = response[0]
-          this.lossDataX = response[1]
+          self.lossDataX = response["data"][0]
+          self.lossDataY = response["data"][1]
+          console.log(self.lossDataX)
+          lossChart.setOption({
+            title: {
+                text: 'Loss'
+            },
+            tooltip: {},
+            xAxis: {
+                data: self.lossDataX
+            },
+            yAxis: {},
+            series: [{
+                name: 'cross entropy',
+                type: 'line',
+                data: self.lossDataY
+            }]
+          });
         })
-        .catch(function (error) {
+        .catch((error)=> {
           console.log(error);
         });
     },
@@ -198,54 +229,20 @@ export default {
       // 改变按钮颜色
       document.getElementById("subtitle1").style.backgroundColor = "#528e6e";
       document.getElementById("subtitle2").style.backgroundColor = "#a5c3b6";
-
+      this.getLoss() 
       // 标记当前选中为loss
       this.activeName = 'loss';
     },
     toAccuracy(){
       document.getElementById("subtitle1").style.backgroundColor = "#a5c3b6";
       document.getElementById("subtitle2").style.backgroundColor = "#528e6e";
- 
+      this.getAccuracy()
       this.activeName = 'accuracy';
     }
   },
   mounted(){
-    var echarts = require('echarts');
 
-    var lossChart = echarts.init(document.getElementById('lossChart'));
 
-    lossChart.setOption({
-        title: {
-            text: 'Loss'
-        },
-        tooltip: {},
-        xAxis: {
-            data: this.lossDataX
-        },
-        yAxis: {},
-        series: [{
-            name: 'cross entropy',
-            type: 'line',
-            data: this.lossDataY
-        }]
-    });
-    var accChart = echarts.init(document.getElementById('accChart'));
-
-    accChart.setOption({
-        title: {
-            text: 'accuracy'
-        },
-        tooltip: {},
-        xAxis: {
-            data: this.accDataX
-        },
-        yAxis: {},
-        series: [{
-            name: '%',
-            type: 'line',
-            data: this.accDataY
-        }]
-    });
   }   //初步添加了两个chart
 }
 </script>

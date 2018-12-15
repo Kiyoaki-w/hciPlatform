@@ -14,13 +14,13 @@ const { VueLoaderPlugin } = require('vue-loader')
 let webConfig = {
   dev: {
     env: require('./dev.env'),
-    port: 8080,  //设置访问的端口号
+    port: 1234,  //设置访问的端口号
     autoOpenBrowser: true, //自动打开浏览器
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
     proxyTable: {
         '/api': {
-            target: 'http://127.0.0.1:8080', //设置调用接口域名和端口号别忘了加http
+            target: 'http://127.0.0.1:1234', //设置调用接口域名和端口号别忘了加http
             changeOrigin: true,
             pathRewrite: {
                 '^/api': '/' //这里理解成用‘/api’代替target里面的地址，组件中我们调接口时直接用/api代替
