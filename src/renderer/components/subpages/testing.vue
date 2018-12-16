@@ -164,16 +164,7 @@ export default {
       }
     }
   },
-  methods:{
-    getModels(){
-      axios.get('/models')
-        .then(function (response) {
-          this.models = response
-        })
-        .catch(function (error) {
-          console.log(error);
-        });
-    },
+  methods:{  
     getDatasets(){
       axios.get('/datasets')
         .then(function (response) {
@@ -211,6 +202,20 @@ export default {
       console.log(file)
     }
   },
+  mounted(){
+    var self = this
+    this.$http.get('http://127.0.0.1:1234/existed_models',{crossdomain: true})
+    .then(function (response) {
+      console.log(response)
+      self.models = []
+//      for(var i=0; i<)
+    })
+    .catch((error)=> {
+      console.log(error);
+    });
+
+
+  }   
 }
 </script>
 
