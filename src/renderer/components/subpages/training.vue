@@ -242,7 +242,8 @@ export default {
         });
     },
     startTrain(){
-      this.$http.post('http://127.0.0.1:1234/train/start', this.params)
+      var __this = this;
+      this.$http.post('http://127.0.0.1:1234/train/start', __this.params)
         .then(function (response) {
           console.log(response);
         })
