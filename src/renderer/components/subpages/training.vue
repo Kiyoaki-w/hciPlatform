@@ -9,13 +9,13 @@
         <el-row style="padding-top:10px">
           <el-col :span="24">
             <el-form :label-position="right" label-width="140px" :model="params">
-              <el-form-item size="medium" label="Model">
+              <el-form-item size="small" label="Model">
                 <el-select v-model="params.model" placeholder="check a model">
                   <el-option v-for="i in models" :value="i.value" :label="i.label"></el-option>
                 </el-select>
               </el-form-item>
               
-              <el-form-item size="medium" label="Dataset">
+              <el-form-item size="small" label="Dataset">
                 <el-select v-model="params.dataset" placeholder="check a dataset">
                   <el-option v-for="i in datasets" :value="i.value" :label="i.label"></el-option>
                 </el-select>
@@ -24,26 +24,26 @@
               <el-row id="subtitle3">
                 <el-col :span="24"><div @click="toAccuracy" class="grid-content">Params</div></el-col>
               </el-row>
-              <el-form-item size="medium" label="Epoch">
+              <el-form-item size="small" label="Epoch">
                 <el-input v-model="params.epoch"></el-input>
               </el-form-item>
-              <el-form-item size="medium" label="Batch size">
+              <el-form-item size="small" label="Batch size">
                 <el-input v-model="params.batchSize"></el-input>
               </el-form-item>
-              <el-form-item size="medium" label="Learning Rate">
+              <el-form-item size="small" label="Learning Rate">
                 <el-input v-model="params.lRate"></el-input>
               </el-form-item>
-              <el-form-item size="medium" label="Activation">
+              <el-form-item size="small" label="Activation">
                 <el-select v-model="params.act" placeholder="choose an activation function">
                   <el-option v-for="i in acts" :value="i.value" :label="i.label"></el-option>
                 </el-select>
               </el-form-item>
-              <el-form-item size="medium" label="Regularization">
+              <el-form-item size="small" label="Regularization">
                 <el-select v-model="params.act" placeholder="choose a regularization method">
                   <el-option v-for="i in regs" :value="i.value" :label="i.label"></el-option>
                 </el-select>
               </el-form-item>
-              <el-form-item size="medium" label="Regularization Rate">
+              <el-form-item size="small" label="Regularization Rate">
                 <el-input v-model="params.regRate"></el-input>
               </el-form-item>
             </el-form>
@@ -83,6 +83,7 @@
           </el-col>
         </el-row>
 
+        
         <!-- content  v-if被改成v-show了 使用v-if的话不会切换图标 -->
         <el-row  v-show="activeName==='loss'">
           <el-col :span="24">
@@ -94,7 +95,24 @@
             <div id="accChart"> </div>
           </el-col>
         </el-row>
+
+        <!-- <el-row>
+          <div class="spinner" v-show="false">
+            <div class="rect1"></div>
+            <div class="rect2"></div>
+            <div class="rect3"></div>
+            <div class="rect4"></div>
+            <div class="rect5"></div>
+          </div>
+        </el-row> -->
+
+        <!-- loading -->
+        <el-row id="loadingIcon">
+          <i :class="loadingStat"></i>
+        </el-row>
       </el-col>
+
+      
 
     </el-row>
   </div>
@@ -106,6 +124,7 @@ export default {
     return{
       // content部分的当前选中 loss/accuracy
       activeName: 'loss',
+      loadingStat: 'el-icon-loading', // el-icon-check
       
       // 下拉菜单数据
       models: [
@@ -320,5 +339,67 @@ export default {
 }
 label.el-form-item__label{
   font-size:13px
+}
+#loadingIcon{
+  font-size:40px;
+  float: right;
+  padding-right: 40px;
+  margin-top: -50px;
+  color: #528e6e;
+  font-weight: bold
+}
+.spinner {
+  float: right;
+  margin-right: 50px;
+  margin-top: -60px;
+  width: 50px;
+  height: 60px;
+  text-align: center;
+  font-size: 6px;
+}
+ 
+.spinner > div {
+  background-color: #67CF22;
+  height: 100%;
+  width: 6px;
+  display: inline-block;
+   
+  -webkit-animation: stretchdelay 1.2s infinite ease-in-out;
+  animation: stretchdelay 1.2s infinite ease-in-out;
+}
+ 
+.spinner .rect2 {
+  -webkit-animation-delay: -1.1s;
+  animation-delay: -1.1s;
+}
+ 
+.spinner .rect3 {
+  -webkit-animation-delay: -1.0s;
+  animation-delay: -1.0s;
+}
+ 
+.spinner .rect4 {
+  -webkit-animation-delay: -0.9s;
+  animation-delay: -0.9s;
+}
+ 
+.spinner .rect5 {
+  -webkit-animation-delay: -0.8s;
+  animation-delay: -0.8s;
+}
+ 
+@-webkit-keyframes stretchdelay {
+  0%, 40%, 100% { -webkit-transform: scaleY(0.4) } 
+  20% { -webkit-transform: scaleY(1.0) }
+}
+ 
+@keyframes stretchdelay {
+  0%, 40%, 100% {
+    transform: scaleY(0.4);
+    -webkit-transform: scaleY(0.4);
+  }  20% {
+    transform: scaleY(1.0);
+    -webkit-transform: scaleY(1.0);
+  }
 }
 </style>
