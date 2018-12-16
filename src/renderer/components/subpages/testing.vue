@@ -41,10 +41,10 @@
                   action="https://jsonplaceholder.typicode.com/posts/"
                   :on-preview="handlePreview"
                   :on-remove="handleRemove"
-                  :file-list="fileList"
+                  :file-list="imgList"
                   :auto-upload="false"
                   :on-change="handleChange"
-                  limit=1
+                  :limit=9
                   :disabled="params.radio==='dataset'">
                   <el-button :disabled="params.radio==='dataset'" slot="trigger" style="margin-left:-100px" size="small" plain>选取文件</el-button>
                   <!-- <el-button style="margin-left: 10px;" size="small" type="success" @click="submitUpload">上传到服务器</el-button> -->
@@ -69,8 +69,16 @@
 
       <!-- result -->
       <el-col style="padding-left:2px" :span="16">
+        <!-- title -->
         <el-row id="title">
           <el-col :span="24"><div class="grid-content">Testing Results</div></el-col>
+        </el-row>
+        <!-- content -->
+        <el-row style="padding-top:20px;">
+          <el-col :span="8" v-for="i in tempimgList">
+            <img :src='i.url' width='190px'>
+            <p style="margin-top:5px;padding-bottom:15px">{{i.text}}</p>
+          </el-col>
         </el-row>
       </el-col>
 
@@ -82,11 +90,37 @@
 export default {
   data(){
     return{
-      fileList: [
+      imgList: [
         // {
         //   name: '', 
         //   url: ''
         // }, 
+      ],
+      tempimgList: [
+        {
+          url: '../../../../static/imgs/rain.jpg',
+          text: 'img1',
+        },
+        {
+          url: '../../../../static/imgs/rain.jpg',
+          text: 'img1',
+        },
+        {
+          url: '../../../../static/imgs/rain.jpg',
+          text: 'img1',
+        },
+        {
+          url: '../../../../static/imgs/rain.jpg',
+          text: 'img1',
+        },
+        {
+          url: '../../../../static/imgs/rain.jpg',
+          text: 'img1',
+        },
+        {
+          url: '../../../../static/imgs/rain.jpg',
+          text: 'img1',
+        },
       ],
       // content部分的当前选中 loss/accuracy
       activeName: 'loss',
@@ -188,6 +222,6 @@ export default {
   color: white;
 }
 .el-upload-dragger{
-  width: 100px
+  width: 100px;
 }
 </style>
