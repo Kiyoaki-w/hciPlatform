@@ -27,14 +27,21 @@
               <el-form-item size="medium" label="Epoch">
                 <el-input v-model="params.epoch"></el-input>
               </el-form-item>
+              <el-form-item size="medium" label="Batch size">
+                <el-input v-model="params.batchSize"></el-input>
+              </el-form-item>
               <el-form-item size="medium" label="Learning Rate">
                 <el-input v-model="params.lRate"></el-input>
               </el-form-item>
               <el-form-item size="medium" label="Activation">
-                <el-input v-model="params.act"></el-input>
+                <el-select v-model="params.act" placeholder="choose an activation function">
+                  <el-option v-for="i in acts" :value="i.value" :label="i.label"></el-option>
+                </el-select>
               </el-form-item>
               <el-form-item size="medium" label="Regularization">
-                <el-input v-model="params.reg"></el-input>
+                <el-select v-model="params.act" placeholder="choose a regularization method">
+                  <el-option v-for="i in regs" :value="i.value" :label="i.label"></el-option>
+                </el-select>
               </el-form-item>
               <el-form-item size="medium" label="Regularization Rate">
                 <el-input v-model="params.regRate"></el-input>
@@ -45,7 +52,7 @@
                 <el-button type="info" @click="toHome">Back Home</el-button>
               </el-col>
               <el-col :span="12">
-                <el-button type="success" @click="">Start Training</el-button>
+                <el-button type="success" @click="startTrain">Start Training</el-button>
               </el-col>
             </el-row>
           </el-col>
@@ -103,31 +110,51 @@ export default {
       // 下拉菜单数据
       models: [
         {
-          label: 'model1',
-          value: 'model1'
+          label: 'LeNet',
+          value: 0
         },
         {
-          label: 'model2',
-          value: 'model2'
+          label: 'MLP',
+          value: 1
         },
         {
-          label: 'model3',
-          value: 'model3'
+          label: 'SVM',
+          value: 2
         },
       ],
       datasets: [
         {
-          label: 'dset1',
-          value: 'dset1'
+          label: 'MINIST',
+          value: 'MINIST'
+        }
+      ],
+      acts: [
+        {
+          label: 'Sigmoid',
+          value: 0
         },
         {
-          label: 'dset2',
-          value: 'dset2'
+          label: 'Relu',
+          value: 1
         },
         {
-          label: 'dset3',
-          value: 'dset3'
+          label: 'Tanh',
+          value: 2
+        }
+      ],
+      regs: [
+        {
+          label: 'No regulatization',
+          value: 0
         },
+        {
+          label: 'L1',
+          value: 1
+        },
+        {
+          label: 'L2',
+          value: 2
+        }
       ],
       lossDataX: [
         '0', '1', '2', '3', '4', '5'
@@ -143,13 +170,14 @@ export default {
       ],
       // 表单数据
       params: {
-        model: '',
-        dataset: '',
-        epoch: '',
-        lRate: '',
-        act: '',
-        reg: '',
-        regRate: '',
+        model: 0,
+        dataset: 'MINIST',
+        epoch: 10,
+        batchSize: 100,
+        lRate: 0.0001,
+        act: 0,
+        reg: 0,
+        regRate: 0.01,
       }
     }
   },
@@ -214,7 +242,7 @@ export default {
         });
     },
     startTrain(){
-      axios.post('/api/train/start', this.params)
+      this.$http.post('http://127.0.0.1:1234/train/start', this.params)
         .then(function (response) {
           console.log(response);
         })
@@ -241,8 +269,6 @@ export default {
     }
   },
   mounted(){
-
-
   }   //初步添加了两个chart
 }
 </script>
