@@ -73,7 +73,12 @@
         <el-row id="title">
           <el-col :span="24"><div class="grid-content">Testing Results</div></el-col>
         </el-row>
-        <!-- content -->
+        <!-- 模型数据 -->
+        <el-row style="padding-top:5px;padding-left:10px">
+          <span style="float:left"><span class="infotext">{{modelInfo.model}}</span>  dataset:<span class="infotext">{{modelInfo.dataset}}</span>  Activation:<span class="infotext">{{modelInfo.act}}</span>  Regularization:<span class="infotext">{{modelInfo.reg}}</span></span>
+          <span style="float:left">epoch:<span class="infotext">{{modelInfo.epoch}}</span>  batchSize:<span class="infotext">{{modelInfo.batchSize}}</span>  Learning Rate:<span class="infotext">{{modelInfo.lRate}}</span>  Regularization Rate:<span class="infotext">{{modelInfo.regRate}}</span></span>
+        </el-row>
+        <!-- 图片显示 -->
         <el-row style="padding-top:20px;">
           <el-col :span="8" v-for="i in tempimgList">
             <img :src='i.url' width='190px'>
@@ -155,6 +160,18 @@ export default {
         },
       ],
 
+      // 模型数据
+      modelInfo: {
+        model: 'LeNet',
+        dataset: 'MINIST',
+        epoch: 10,
+        batchSize: 100,
+        lRate: 0.0001,
+        act: 0,
+        reg: 0,
+        regRate: 0.01,
+      },
+
 
       // 表单数据
       params: {
@@ -228,5 +245,9 @@ export default {
 }
 .el-upload-dragger{
   width: 100px;
+}
+.infotext{
+  color: #528e6e;
+  font-weight: bold
 }
 </style>
