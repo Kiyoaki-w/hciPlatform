@@ -124,7 +124,7 @@ export default {
     return{
       // content部分的当前选中 loss/accuracy
       activeName: 'loss',
-      loadingStat: 'el-icon-loading', // el-icon-check
+      loadingStat: 'el-icon-check', // el-icon-check  el-icon-loading
       
       // 下拉菜单数据
       models: [
@@ -261,6 +261,7 @@ export default {
         });
     },
     startTrain(){
+      this.loadingStat = "el-icon-loading" 
       var __this = this;
       this.$http.post('http://127.0.0.1:1234/train/start', __this.params)
         .then(function (response) {
@@ -289,6 +290,7 @@ export default {
     }
   },
   mounted(){
+    
   }   //初步添加了两个chart
 }
 </script>
