@@ -60,7 +60,7 @@
                 <el-button type="info" @click="toHome">Back Home</el-button>
               </el-col>
               <el-col :span="12">
-                <el-button type="success" @click="">Start Testing</el-button>
+                <el-button type="success" @click="startTest">Start Testing</el-button>
               </el-col>
             </el-row>
           </el-col>
@@ -77,6 +77,7 @@
         <el-row style="padding-top:5px;padding-left:10px">
           <span style="float:left"><span class="infotext">{{modelInfo.model}}</span>  dataset:<span class="infotext">{{modelInfo.dataset}}</span>  Activation:<span class="infotext">{{modelInfo.act}}</span>  Regularization:<span class="infotext">{{modelInfo.reg}}</span></span>
           <span style="float:left">epoch:<span class="infotext">{{modelInfo.epoch}}</span>  batchSize:<span class="infotext">{{modelInfo.batchSize}}</span>  Learning Rate:<span class="infotext">{{modelInfo.lRate}}</span>  Regularization Rate:<span class="infotext">{{modelInfo.regRate}}</span></span>
+          <span style="float:left">loss on test data:<span class="infotext">{{modelInfo.loss}}</span>  accuracy on test data:<span class="infotext">{{modelInfo.acc}}</span></span>
         </el-row>
         <!-- 图片显示 -->
         <el-row style="padding-top:20px;">
@@ -103,28 +104,28 @@ export default {
       ],
       tempimgList: [
         {
-          url: '../../../../static/imgs/rain.jpg',
+          url: 'D:/人机交互/platform/platform/',
           text: 'img1',
         },
         {
-          url: '../../../../static/imgs/rain.jpg',
-          text: 'img1',
+          url: 'D:/人机交互/platform/platform/',
+          text: 'img2',
         },
         {
-          url: '../../../../static/imgs/rain.jpg',
-          text: 'img1',
+          url: 'D:/人机交互/platform/platform/',
+          text: 'img3',
         },
         {
-          url: '../../../../static/imgs/rain.jpg',
-          text: 'img1',
+          url: 'D:/人机交互/platform/platform/',
+          text: 'img4',
         },
         {
-          url: '../../../../static/imgs/rain.jpg',
-          text: 'img1',
+          url: 'D:/人机交互/platform/platform/',
+          text: 'img5',
         },
         {
-          url: '../../../../static/imgs/rain.jpg',
-          text: 'img1',
+          url: 'D:/人机交互/platform/platform/',
+          text: 'img6',
         },
       ],
       // content部分的当前选中 loss/accuracy
@@ -147,17 +148,9 @@ export default {
       ],
       datasets: [
         {
-          label: 'dset1',
-          value: 'dset1'
-        },
-        {
-          label: 'dset2',
-          value: 'dset2'
-        },
-        {
-          label: 'dset3',
-          value: 'dset3'
-        },
+          label: 'MINIST',
+          value: 'MINIST'
+        }
       ],
 
       // 模型数据
@@ -170,18 +163,44 @@ export default {
         act: 0,
         reg: 0,
         regRate: 0.01,
+        loss: 0,
+        acc: 0,
       },
 
 
       // 表单数据
       params: {
         model: '', // 所选model
-        dataset: '', // 所选dataset
+        dataset: 'MINIST', // 所选dataset
         radio: 'dataset', // 标记测试模式, "dataset" / "picture"
       }
     }
   },
-  methods:{  
+  methods:{
+    startTest(){
+      var self = this
+      var loss = 0
+      var acc = 0
+      var res = []
+      this.$http.get('http://127.0.0.1:1234/eval/inference_on_existed_data/' + this.params["model"],{crossdomain: true})
+      .then(function (response) {
+        console.log(response)
+        loss = response["data"][0][0]
+        acc = response["data"][0][1]
+        self.modelInfo["acc"] = acc
+        self.modelInfo["loss"] = loss
+        
+        for(var i=0; i<self.tempimgList.length; i++){
+          self.tempimgList[i]["text"] = response["data"][1][i][1]
+          console.log(response["data"][1][i][0].replace("\\", "/"))
+          self.tempimgList[i]["url"] = 'D:/人机交互/platform/platform/' + response["data"][1][i][0].replace("\\", "/")
+        }
+        
+      })
+      .catch((error)=> {
+        console.log(error);
+      });
+    },  
     getDatasets(){
       axios.get('/datasets')
         .then(function (response) {
@@ -221,10 +240,18 @@ export default {
   },
   mounted(){
     var self = this
+    var res = []
     this.$http.get('http://127.0.0.1:1234/existed_models',{crossdomain: true})
     .then(function (response) {
-      console.log(response)
+      var keys = Object.keys(response["data"][0])
       self.models = []
+      for(var i=0;i<keys.length;i++){
+        self.models.push({label:response["data"][0][keys[i]][0] + "_" + response["data"][0][keys[i]][1] + "_" +  keys[i],value:keys[i]})
+        console.log(keys[i])
+        console.log(response["data"][0][keys[i]])
+      }
+      res = response
+      
 //      for(var i=0; i<)
     })
     .catch((error)=> {

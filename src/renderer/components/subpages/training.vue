@@ -125,7 +125,7 @@ export default {
       // content部分的当前选中 loss/accuracy
       activeName: 'loss',
       loadingStat: 'el-icon-check', // el-icon-check  el-icon-loading
-      
+      currentModel: 233,
       // 下拉菜单数据
       models: [
         {
@@ -191,7 +191,7 @@ export default {
       params: {
         model: 0,
         dataset: 'MINIST',
-        epoch: 10,
+        epoch: 1,
         batchSize: 100,
         lRate: 0.0001,
         act: 0,
@@ -206,7 +206,7 @@ export default {
       var accChart = echarts.init(document.getElementById('accChart'));
 
       var self = this
-      this.$http.get('http://127.0.0.1:1234/train/accuracy/233',{crossdomain: true})
+      this.$http.get('http://127.0.0.1:1234/train/accuracy/'+self.currentModel,{crossdomain: true})
         .then(function (response) {
           self.accDataX = response["data"][0]
           self.accDataY = response["data"][1]
@@ -235,7 +235,7 @@ export default {
 
       var lossChart = echarts.init(document.getElementById('lossChart'));
       var self = this
-      this.$http.get('http://127.0.0.1:1234/train/loss/233')
+      this.$http.get('http://127.0.0.1:1234/train/loss/'+self.currentModel)
         .then(function (response) {
           self.lossDataX = response["data"][0]
           self.lossDataY = response["data"][1]
@@ -265,11 +265,14 @@ export default {
       var __this = this;
       this.$http.post('http://127.0.0.1:1234/train/start', __this.params)
         .then(function (response) {
+          __this.currentModel = response["data"]
           console.log(response);
         })
         .catch(function (error) {
           console.log(error);
         });
+       //设置定时器
+
     },
     toHome(){
       this.$router.push('/');
@@ -290,7 +293,16 @@ export default {
     }
   },
   mounted(){
-    
+      var self = this
+      console.log(this.currentModel)
+      this.$http.get('http://127.0.0.1:1234/train/finished/'+self.currentModel)
+        .then(function (response) {
+          console.log("----")
+          console.log(response)
+        })
+        .catch((error)=> {
+          console.log(error);
+        });
   }   //初步添加了两个chart
 }
 </script>
