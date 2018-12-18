@@ -10,8 +10,8 @@
           <el-col :span="24">
             <el-form :label-position="right" label-width="140px" :model="params">
               <el-form-item size="medium" label="Model">
-                <el-select v-model="params.model" placeholder="choose a model">
-                  <el-option v-for="i in models" :value="i.value" :label="i.label"></el-option>
+                <el-select v-model="params.model" @change="modelChange" placeholder="choose a model">
+                  <el-option v-for="i in models" :value="i.value" :label="i.label" id="choosedModel"></el-option>
                 </el-select>
               </el-form-item>
 
@@ -177,6 +177,10 @@ export default {
     }
   },
   methods:{
+    modelChange(){
+      console.log("choosedModel")
+      console.log(document.getElementById("choosedModel").value)
+    },
     startTest(){
       var self = this
       var loss = 0
@@ -243,12 +247,14 @@ export default {
     var res = []
     this.$http.get('http://127.0.0.1:1234/existed_models',{crossdomain: true})
     .then(function (response) {
-      var keys = Object.keys(response["data"][0])
+      
       self.models = []
-      for(var i=0;i<keys.length;i++){
-        self.models.push({label:response["data"][0][keys[i]][0] + "_" + response["data"][0][keys[i]][1] + "_" +  keys[i],value:keys[i]})
-        console.log(keys[i])
-        console.log(response["data"][0][keys[i]])
+      console.log(response["data"])
+      for(var i=0;i<response["data"].length;i++){
+        var keys = Object.keys(response["data"][i])
+        self.models.push({label:response["data"][i][keys[0]][0] + "_" + response["data"][i][keys[0]][1] + "_" +  keys[0],value:keys[0]})
+        console.log(keys[0])
+        console.log(response["data"][i][keys[0]])
       }
       res = response
       

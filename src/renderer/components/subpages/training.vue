@@ -123,6 +123,7 @@ export default {
   data(){
     return{
       // content部分的当前选中 loss/accuracy
+      timerCount: {},
       activeName: 'loss',
       loadingStat: 'el-icon-check', // el-icon-check  el-icon-loading
       currentModel: 233,
@@ -201,6 +202,16 @@ export default {
     }
   },
   methods:{
+    timingGetAccuracy: function() {
+        setInterval(() => { 
+            this.getAccuracy();
+        }, 5000)
+    },
+    timingGetLoss: function() {
+        setInterval(() => { 
+            this.getLoss();
+        }, 5000)
+    },
     getAccuracy(){
       var echarts = require('echarts');
       var accChart = echarts.init(document.getElementById('accChart'));
@@ -273,6 +284,7 @@ export default {
         });
        //设置定时器
 
+
     },
     toHome(){
       this.$router.push('/');
@@ -303,6 +315,12 @@ export default {
         .catch((error)=> {
           console.log(error);
         });
+//    for(let i = 0; i <= timerCount.length; i++){
+//        clearInterval(timerCount[i]);
+//    }
+//    timerCount.splice(0, timerCount.length)
+    this.timingGetAccuracy()
+    this.timingGetLoss()  
   }   //初步添加了两个chart
 }
 </script>
