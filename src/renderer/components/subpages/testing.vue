@@ -135,15 +135,15 @@ export default {
       models: [
         {
           label: 'model1',
-          value: 'model1'
+          value: 'model11'
         },
         {
           label: 'model2',
-          value: 'model2'
+          value: 'model22'
         },
         {
           label: 'model3',
-          value: 'model3'
+          value: 'model33'
         },
       ],
       datasets: [
@@ -178,8 +178,9 @@ export default {
   },
   methods:{
     modelChange(){
-      console.log("choosedModel")
-      console.log(document.getElementById("choosedModel").value)
+      console.log("choosedModel");
+      // 当前选中的值，将this.models中的value绑定到this.params.model中，可以在后者取到当前选中值
+      console.log(this.params.model);
     },
     startTest(){
       var self = this
@@ -216,6 +217,7 @@ export default {
     },
     toHome(){
       this.$router.push('/');
+      this.$store.state.params = this.params;
     },
     toLoss(){
       // 改变按钮颜色
@@ -243,6 +245,23 @@ export default {
     }
   },
   mounted(){
+    // 全局变量示例
+    // 全局变量的设置在/src/store/index.js中
+    // 将变量设置在Vuex.Store的state下
+    
+    // 全局变量的获取
+    console.log(this.$store.state.globalVariable);
+
+    // 全局变量的变更
+    this.$store.state.globalVariable = 'hello world';
+    console.log(this.$store.state.globalVariable);
+
+    // 一种解决页面退出后变量未保存的思路
+    // 每次退出时，将本页Vue对象中data信息保存到全局变量，放在路由方法toHome()中
+    // 进入时，从全局变量读取，将读取的语句放在mounted起始的位置
+    console.log(this.$store.state.params);
+
+
     var self = this
     var res = []
     this.$http.get('http://127.0.0.1:1234/existed_models',{crossdomain: true})
