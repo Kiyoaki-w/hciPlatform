@@ -52,7 +52,7 @@
                 <el-button type="info" @click="toHome">Back Home</el-button>
               </el-col>
               <el-col :span="12">
-                <el-button type="success" @click="startTrain">Start Training</el-button>
+                <el-button id="startButton" type="success" @click="startTrain" :disabled="buttonStat">Start Training</el-button>
               </el-col>
             </el-row>
           </el-col>
@@ -108,7 +108,7 @@
 
         <!-- loading -->
         <el-row id="loadingIcon">
-          <i :class="loadingStat"></i>
+          <i  :class="loadingStat" @click="goTest" ><p :hidden="showText" style="font-size:12px">Go to Test</p></i>
         </el-row>
       </el-col>
 
@@ -123,7 +123,11 @@ export default {
   data(){
     return{
       // content部分的当前选中 loss/accuracy
-      timerCount: {},
+      showText: false,
+      buttonStat: true,
+      timer_1: {},
+      timer_2: {},
+      timerCount: [],
       activeName: 'loss',
       loadingStat: 'el-icon-check', // el-icon-check  el-icon-loading
       currentModel: 233,
@@ -194,7 +198,7 @@ export default {
         dataset: 'MINIST',
         epoch: 1,
         batchSize: 100,
-        lRate: 0.0001,
+        lRate: 0.001,
         act: 0,
         reg: 0,
         regRate: 0.01,
@@ -202,15 +206,18 @@ export default {
     }
   },
   methods:{
+    goTest: function(){
+      if(this.loadingStat == "el-icon-check"){
+        this.$router.push('/main/testing');
+        console.log("-----")
+      }
+        
+    },
     timingGetAccuracy: function() {
-        setInterval(() => { 
-            this.getAccuracy();
-        }, 5000)
+
     },
     timingGetLoss: function() {
-        setInterval(() => { 
-            this.getLoss();
-        }, 5000)
+
     },
     getAccuracy(){
       var echarts = require('echarts');
@@ -273,17 +280,30 @@ export default {
     },
     startTrain(){
       this.loadingStat = "el-icon-loading" 
+      this.showText = true
       var __this = this;
       this.$http.post('http://127.0.0.1:1234/train/start', __this.params)
         .then(function (response) {
           __this.currentModel = response["data"]
+          __this.$store.state.globalVariable.prop1 = response["data"]
+
           console.log(response);
+//          for(var k=0; k<__this.timerCount.length; k++){
+  //          console.log(__this.timerCount[k])
+    //        clearInterval(__this.timerCount[k])
+      //    }
+          clearInterval(__this.$store.state.globalVariable.prop2)
+          clearInterval(__this.$store.state.globalVariable.prop3)
+          __this.$store.state.globalVariable.prop2 = setInterval(__this.getLoss, 5000)
+          __this.$store.state.globalVariable.prop3 = setInterval(__this.getAccuracy, 5000)
+          console.log(__this.timerCount[0], __this.timerCount[1])
+          __this.buttonStat = true
+          
         })
         .catch(function (error) {
           console.log(error);
         });
        //设置定时器
-
 
     },
     toHome(){
@@ -306,10 +326,30 @@ export default {
   },
   mounted(){
       var self = this
+      this.currentModel = this.$store.state.globalVariable.prop1
+      console.log(this.$store.state.globalVariable)
       console.log(this.currentModel)
       this.$http.get('http://127.0.0.1:1234/train/finished/'+self.currentModel)
         .then(function (response) {
           console.log("----")
+          if(response.data == 1){
+            self.buttonStat = false
+            self.loadingStat = "el-icon-check"
+        //    loadingText = .createElement('p')
+            self.showText = false
+          }                      
+          else{
+            self.showText = true
+            self.buttonStat = true
+            document.getElementById("startButton").setAttribute('disabled')
+            self.loadingStat = "el-icon-loading"
+            setInterval(() => { 
+              self.getLoss();
+            }, 5000)
+            setInterval(() => { 
+              self.getAccuracy();
+            }, 5000)
+          }             
           console.log(response)
         })
         .catch((error)=> {
@@ -319,8 +359,7 @@ export default {
 //        clearInterval(timerCount[i]);
 //    }
 //    timerCount.splice(0, timerCount.length)
-    this.timingGetAccuracy()
-    this.timingGetLoss()  
+
   }   //初步添加了两个chart
 }
 </script>

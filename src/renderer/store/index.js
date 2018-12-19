@@ -13,9 +13,11 @@ export default new Vuex.Store({
   // 全局变量设置
   state:{
     globalVariable: {
-      prop1: 'hello',
-      prop2: 'global variable',
-      prop3: 1
+      prop1: 233,
+      prop2: 10,
+      prop3: 11,
+      prop4: 'global variable',
+      prop5: 1
     },
     params: ''
   },

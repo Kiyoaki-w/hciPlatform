@@ -38,18 +38,20 @@
               <el-row style="margin-top:-15px" size="medium" label="Dataset">
                 <el-upload
                   ref="upload"
-                  action="https://jsonplaceholder.typicode.com/posts/"
+                  action="http://127.0.0.1:1234/eval/inference"                                                  
                   :on-preview="handlePreview"
                   :on-remove="handleRemove"
                   :file-list="imgList"
                   :auto-upload="false"
+                  :data={Model_id:params.model}
                   :on-change="handleChange"
+                  :on-success="uploadSuccess"
                   :limit=9
                   :disabled="params.radio==='dataset'">
                   <el-button :disabled="params.radio==='dataset'" slot="trigger" style="margin-left:-100px" size="small" plain>选取文件</el-button>
                   <!-- <el-button style="margin-left: 10px;" size="small" type="success" @click="submitUpload">上传到服务器</el-button> -->
+                  <!--"https://jsonplaceholder.typicode.com/posts/"-->
                 </el-upload>
-                <img src="" style="margin-top:10px;" width="120px" height="120px">
               </el-row>
               
             </el-form>
@@ -77,10 +79,12 @@
         <el-row style="padding-top:5px;padding-left:10px">
           <span style="float:left"><span class="infotext">{{modelInfo.model}}</span>  dataset:<span class="infotext">{{modelInfo.dataset}}</span>  Activation:<span class="infotext">{{modelInfo.act}}</span>  Regularization:<span class="infotext">{{modelInfo.reg}}</span></span>
           <span style="float:left">epoch:<span class="infotext">{{modelInfo.epoch}}</span>  batchSize:<span class="infotext">{{modelInfo.batchSize}}</span>  Learning Rate:<span class="infotext">{{modelInfo.lRate}}</span>  Regularization Rate:<span class="infotext">{{modelInfo.regRate}}</span></span>
-          <span style="float:left">loss on test data:<span class="infotext">{{modelInfo.loss}}</span>  accuracy on test data:<span class="infotext">{{modelInfo.acc}}</span></span>
         </el-row>
         <!-- 图片显示 -->
-        <el-row style="padding-top:20px;">
+        
+        <el-row style="padding-top:20px;">          
+        <span id="testPerformance" style="float:left; display:none">loss on testSet:<span class="infotext">{{modelInfo.loss}}</span>     accuracy on testSet:<span class="infotext">{{modelInfo.acc}}</span></span>
+
           <el-col :span="8" v-for="i in tempimgList">
             <img :src='i.url' width='190px'>
             <p style="margin-top:5px;padding-bottom:15px">{{i.text}}</p>
@@ -105,33 +109,34 @@ export default {
       tempimgList: [
         {
           url: 'D:/人机交互/platform/platform/',
-          text: 'img1',
+          text: '',
         },
         {
           url: 'D:/人机交互/platform/platform/',
-          text: 'img2',
+          text: '',
         },
         {
           url: 'D:/人机交互/platform/platform/',
-          text: 'img3',
+          text: '',
         },
         {
           url: 'D:/人机交互/platform/platform/',
-          text: 'img4',
+          text: '',
         },
         {
           url: 'D:/人机交互/platform/platform/',
-          text: 'img5',
+          text: '',
         },
         {
           url: 'D:/人机交互/platform/platform/',
-          text: 'img6',
+          text: '',
         },
       ],
       // content部分的当前选中 loss/accuracy
       activeName: 'loss',
       
       // 下拉菜单数据
+      allModelInfo:{},
       models: [
         {
           label: 'model1',
@@ -160,8 +165,8 @@ export default {
         epoch: 10,
         batchSize: 100,
         lRate: 0.0001,
-        act: 0,
-        reg: 0,
+        act: "",
+        reg: "",
         regRate: 0.01,
         loss: 0,
         acc: 0,
@@ -177,34 +182,66 @@ export default {
     }
   },
   methods:{
+
     modelChange(){
       console.log("choosedModel");
       // 当前选中的值，将this.models中的value绑定到this.params.model中，可以在后者取到当前选中值
       console.log(this.params.model);
+      this.modelInfo.model = this.allModelInfo[this.params.model][0]
+      this.modelInfo.dataset = this.allModelInfo[this.params.model][1]
+      this.modelInfo.batchSize = this.allModelInfo[this.params.model][3]
+      this.modelInfo.lRate = this.allModelInfo[this.params.model][2]
+      var acti = ""
+      if(this.allModelInfo[this.params.model][4] == 0)
+        acti = "sigmoid"
+      else if(this.allModelInfo[this.params.model][4] == 1)
+        acti = "relu"
+      else
+        acti = "tanh"
+        //0为无正则，1为l1,2为l2   0,1,2(对应CNN,MLP,SVM
+      this.modelInfo.act = acti
+      var reg = ""
+      if(this.allModelInfo[this.params.model][5] == 0)
+        reg = "no regularization"
+      else if(this.allModelInfo[this.params.model][5] == 1)
+        reg = "l1"
+      else
+        reg = "l2"
+      console.log(acti)
+      console.log(reg)
+      this.modelInfo.reg = reg
+      this.modelInfo.regRate = this.allModelInfo[this.params.model][6]
+      
     },
     startTest(){
       var self = this
       var loss = 0
       var acc = 0
       var res = []
-      this.$http.get('http://127.0.0.1:1234/eval/inference_on_existed_data/' + this.params["model"],{crossdomain: true})
-      .then(function (response) {
-        console.log(response)
-        loss = response["data"][0][0]
-        acc = response["data"][0][1]
-        self.modelInfo["acc"] = acc
-        self.modelInfo["loss"] = loss
-        
-        for(var i=0; i<self.tempimgList.length; i++){
-          self.tempimgList[i]["text"] = response["data"][1][i][1]
-          console.log(response["data"][1][i][0].replace("\\", "/"))
-          self.tempimgList[i]["url"] = 'D:/人机交互/platform/platform/' + response["data"][1][i][0].replace("\\", "/")
-        }
-        
-      })
-      .catch((error)=> {
-        console.log(error);
-      });
+      if(this.params.radio == "dataset")
+        this.$http.get('http://127.0.0.1:1234/eval/inference_on_existed_data/' + this.params["model"],{crossdomain: true})
+        .then(function (response) {
+          console.log(response)
+          loss = response["data"][0][0]
+          acc = response["data"][0][1]
+          self.modelInfo["acc"] = acc
+          self.modelInfo["loss"] = loss
+          
+          for(var i=0; i<self.tempimgList.length; i++){
+            self.tempimgList[i]["text"] = response["data"][1][i][1]
+            console.log(response["data"][1][i][0].replace("\\", "/"))
+            self.tempimgList[i]["url"] = 'D:/人机交互/platform/platform/' + response["data"][1][i][0].replace("\\", "/")
+          }
+          document.getElementById("testPerformance").style.display = ""
+        })
+        .catch((error)=> {
+          console.log(error);
+        });
+      else{
+        document.getElementById("testPerformance").style.display = "none"
+
+        this.$refs.upload.submit();
+      }
     },  
     getDatasets(){
       axios.get('/datasets')
@@ -242,7 +279,41 @@ export default {
     },
     handleChange(file, fileList){
       console.log(file)
-    }
+    },
+    uploadSuccess(response, file, fileList){
+      this.tempimgList = [
+        {
+          url: 'D:/人机交互/platform/platform/',
+          text: '',
+        },
+        {
+          url: 'D:/人机交互/platform/platform/',
+          text: '',
+        },
+        {
+          url: 'D:/人机交互/platform/platform/',
+          text: '',
+        },
+        {
+          url: 'D:/人机交互/platform/platform/',
+          text: '',
+        },
+        {
+          url: 'D:/人机交互/platform/platform/',
+          text: '',
+        },
+        {
+          url: 'D:/人机交互/platform/platform/',
+          text: '',
+        },
+      ],
+      console.log(response)
+      for(var i=0; i<fileList.length; i++){
+        this.tempimgList[i].url = fileList[i].raw.path
+        this.tempimgList[i].text = response
+      }
+      
+    },
   },
   mounted(){
     // 全局变量示例
@@ -253,7 +324,7 @@ export default {
     console.log(this.$store.state.globalVariable);
 
     // 全局变量的变更
-    this.$store.state.globalVariable = 'hello world';
+//    this.$store.state.globalVariable = 'hello world';
     console.log(this.$store.state.globalVariable);
 
     // 一种解决页面退出后变量未保存的思路
@@ -272,8 +343,7 @@ export default {
       for(var i=0;i<response["data"].length;i++){
         var keys = Object.keys(response["data"][i])
         self.models.push({label:response["data"][i][keys[0]][0] + "_" + response["data"][i][keys[0]][1] + "_" +  keys[0],value:keys[0]})
-        console.log(keys[0])
-        console.log(response["data"][i][keys[0]])
+        self.allModelInfo[keys[0]] = response["data"][i][keys[0]]
       }
       res = response
       
