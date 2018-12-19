@@ -108,7 +108,7 @@
 
         <!-- loading -->
         <el-row id="loadingIcon">
-          <i  :class="loadingStat" @click="goTest" ><p :hidden="showText" style="font-size:12px">Go to Test</p></i>
+          <i style="cursor:pointer" :class="loadingStat" @click="goTest" ><p :hidden="showText" style="font-size:12px">Go to Test</p></i>
         </el-row>
       </el-col>
 

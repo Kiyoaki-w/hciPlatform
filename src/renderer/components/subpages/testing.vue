@@ -52,6 +52,7 @@
                   <!-- <el-button style="margin-left: 10px;" size="small" type="success" @click="submitUpload">上传到服务器</el-button> -->
                   <!--"https://jsonplaceholder.typicode.com/posts/"-->
                 </el-upload>
+                <img :src="selectedSrc" style="margin-top:10px;" width="150px" height="150px">
               </el-row>
               
             </el-form>
@@ -79,16 +80,17 @@
         <el-row style="padding-top:5px;padding-left:10px">
           <span style="float:left"><span class="infotext">{{modelInfo.model}}</span>  dataset:<span class="infotext">{{modelInfo.dataset}}</span>  Activation:<span class="infotext">{{modelInfo.act}}</span>  Regularization:<span class="infotext">{{modelInfo.reg}}</span></span>
           <span style="float:left">epoch:<span class="infotext">{{modelInfo.epoch}}</span>  batchSize:<span class="infotext">{{modelInfo.batchSize}}</span>  Learning Rate:<span class="infotext">{{modelInfo.lRate}}</span>  Regularization Rate:<span class="infotext">{{modelInfo.regRate}}</span></span>
+          <span id="testPerformance" style="float:left; ">loss on testSet:<span class="infotext">{{modelInfo.loss}}</span>     accuracy on testSet:<span class="infotext">{{modelInfo.acc}}</span></span>
         </el-row>
         <!-- 图片显示 -->
-        
         <el-row style="padding-top:20px;">          
-        <span id="testPerformance" style="float:left; display:none">loss on testSet:<span class="infotext">{{modelInfo.loss}}</span>     accuracy on testSet:<span class="infotext">{{modelInfo.acc}}</span></span>
-
           <el-col :span="8" v-for="i in tempimgList">
-            <img :src='i.url' width='190px'>
+            <img :src='i.url' width='135px'>
             <p style="margin-top:5px;padding-bottom:15px">{{i.text}}</p>
           </el-col>
+        </el-row>
+        <el-row id="loadingIcon" style="padding-top:25px">
+          <i v-show='loadingShow' :class="loadingStat" @click="goTest"></i>
         </el-row>
       </el-col>
 
@@ -100,6 +102,8 @@
 export default {
   data(){
     return{
+      loadingShow: false,
+      loadingStat: 'el-icon-loading', // el-icon-check  el-icon-loading
       imgList: [
         // {
         //   name: '', 
@@ -132,6 +136,33 @@ export default {
           text: '',
         },
       ],
+      // tempimgList: [
+      //   {
+      //     url: 'D:/图/aaa.jpg',
+      //     text: 'D:/图/aaa.jpg',
+      //   },
+      //   {
+      //     url: 'D:/图/aaa.jpg',
+      //     text: 'D:/图/aaa.jpg',
+      //   },
+      //   {
+      //     url: 'D:/图/aaa.jpg',
+      //     text: 'D:/图/aaa.jpg',
+      //   },
+      //   {
+      //     url: 'D:/图/aaa.jpg',
+      //     text: 'D:/图/aaa.jpg',
+      //   },
+      //   {
+      //     url: 'D:/图/aaa.jpg',
+      //     text: 'D:/图/aaa.jpg',
+      //   },
+      //   {
+      //     url: 'D:/图/aaa.jpg',
+      //     text: 'D:/图/aaa.jpg',
+      //   },
+      // ],
+      selectedSrc: 'D:/图/aaa.jpg',
       // content部分的当前选中 loss/accuracy
       activeName: 'loss',
       
@@ -244,9 +275,12 @@ export default {
       }
     },  
     getDatasets(){
+      this.loadingStat = 'el-icon-loading'; // 开始读取，设置图标为loading
+      this.loadingShow = true; // 显示图标
       axios.get('/datasets')
         .then(function (response) {
-          this.datasets = response
+          this.datasets = response;
+          this.loadingStat = 'el-icon-check'; // 读取完成，图标改变为check
         })
         .catch(function (error) {
           console.log(error);
@@ -353,6 +387,9 @@ export default {
       console.log(error);
     });
 
+    // 修改选取文件按钮字样为英文
+    var btnText = document.querySelectorAll('button > span');
+    btnText[0].innerText = 'Select Img';
 
   }   
 }
@@ -371,5 +408,8 @@ export default {
 .infotext{
   color: #528e6e;
   font-weight: bold
+}
+#content > div > div > div.el-col.el-col-8 > div:nth-child(2) > div > form > div:nth-child(6) > div > div > button > span{
+  font-size:16px
 }
 </style>
