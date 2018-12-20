@@ -19,6 +19,11 @@
             <button @click="toTraining" id="mybutton">Personally train a model</button>
           </el-col>
         </el-row>
+        <el-row style="margin-top:40px">
+          <el-col :span="4" :offset="20">
+            <a href=""><i class="el-icon-question"></i>help</a>
+          </el-col>
+        </el-row>
       </el-main>
     </el-container>
   </el-container>
