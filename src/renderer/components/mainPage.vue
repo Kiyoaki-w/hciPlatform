@@ -3,8 +3,6 @@
     <el-header id="mainHeader">
       An Interesting <b>Neural Network</b> Experiment Platform
     </el-header>
-
-    <el-header id="mainHeader">An Interesting <b>Neural Network</b> Experiment Platform</el-header>
     
     <el-container id="mainBody">
       <el-aside id="content">
