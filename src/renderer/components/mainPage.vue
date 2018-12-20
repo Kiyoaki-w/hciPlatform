@@ -1,7 +1,9 @@
 <template>
   <el-container>
-    <el-header id="mainHeader">An Interesting <b>Neural Network</b> Experiment Platform</el-header>
+    <i  style="position: absolute;left: 10px;top: 10px;" class="el-icon-document"><p style="font-size:12px">Help</p></i>
 
+    <el-header id="mainHeader">An Interesting <b>Neural Network</b> Experiment Platform</el-header>
+    
     <el-container id="mainBody">
       <el-aside id="content">
         <router-view></router-view>
