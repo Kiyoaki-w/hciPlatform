@@ -16,7 +16,7 @@ export default new Vuex.Store({
       prop1: 233,
       prop2: 10,
       prop3: 11,
-      prop4: 'global variable',
+      prop4: 12,
       prop5: 1
     },
     params: ''

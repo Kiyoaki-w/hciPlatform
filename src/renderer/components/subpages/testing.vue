@@ -162,7 +162,7 @@ export default {
       //     text: 'D:/图/aaa.jpg',
       //   },
       // ],
-      selectedSrc: 'D:/图/aaa.jpg',
+      selectedSrc: 'D:/人机交互/platform/platform/test/233_2.jpg',
       // content部分的当前选中 loss/accuracy
       activeName: 'loss',
       
@@ -213,7 +213,9 @@ export default {
     }
   },
   methods:{
+    goTest(){
 
+    },
     modelChange(){
       console.log("choosedModel");
       // 当前选中的值，将this.models中的value绑定到this.params.model中，可以在后者取到当前选中值
@@ -249,14 +251,18 @@ export default {
       var loss = 0
       var acc = 0
       var res = []
-      if(this.params.radio == "dataset")
-        this.$http.get('http://127.0.0.1:1234/eval/inference_on_existed_data/' + this.params["model"],{crossdomain: true})
+      if(this.params.radio == "dataset"){
+      this.loadingStat = 'el-icon-loading'; // 开始读取，设置图标为loading
+      this.loadingShow = true; // 显示图标
+
+      this.$http.get('http://127.0.0.1:1234/eval/inference_on_existed_data/' + this.params["model"],{crossdomain: true})
         .then(function (response) {
           console.log(response)
           loss = response["data"][0][0]
           acc = response["data"][0][1]
           self.modelInfo["acc"] = acc
           self.modelInfo["loss"] = loss
+          self.loadingStat = 'el-icon-check'; // 读取完成，图标改变为check
           
           for(var i=0; i<self.tempimgList.length; i++){
             self.tempimgList[i]["text"] = response["data"][1][i][1]
@@ -268,6 +274,7 @@ export default {
         .catch((error)=> {
           console.log(error);
         });
+      }
       else{
         document.getElementById("testPerformance").style.display = "none"
 
@@ -305,13 +312,9 @@ export default {
     submitUpload() {
       this.$refs.upload.submit();
     },
-    handleRemove(file, fileList) {
-      // console.log(file, fileList);
-    },
-    handlePreview(file) {
-      // console.log(file);
-    },
+
     handleChange(file, fileList){
+      this.selectedSrc = file.raw.path
       console.log(file)
     },
     uploadSuccess(response, file, fileList){

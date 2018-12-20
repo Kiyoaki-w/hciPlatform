@@ -213,12 +213,7 @@ export default {
       }
         
     },
-    timingGetAccuracy: function() {
 
-    },
-    timingGetLoss: function() {
-
-    },
     getAccuracy(){
       var echarts = require('echarts');
       var accChart = echarts.init(document.getElementById('accChart'));
@@ -278,6 +273,23 @@ export default {
           console.log(error);
         });
     },
+    getFinished(){
+      var self = this
+      this.currentModel = this.$store.state.globalVariable.prop1
+      this.$http.get('http://127.0.0.1:1234/train/finished/'+self.currentModel)
+        .then(function (response) {
+          console.log("----")
+          if(response.data == 1){
+            self.buttonStat = false
+            self.loadingStat = "el-icon-check"
+            self.showText = false
+          }                      
+          console.log(response)
+        })
+        .catch((error)=> {
+          console.log(error);
+        });
+    },
     startTrain(){
       this.loadingStat = "el-icon-loading" 
       this.showText = true
@@ -294,8 +306,11 @@ export default {
       //    }
           clearInterval(__this.$store.state.globalVariable.prop2)
           clearInterval(__this.$store.state.globalVariable.prop3)
+          clearInterval(__this.$store.state.globalVariable.prop4)
+          
           __this.$store.state.globalVariable.prop2 = setInterval(__this.getLoss, 5000)
           __this.$store.state.globalVariable.prop3 = setInterval(__this.getAccuracy, 5000)
+          __this.$store.state.globalVariable.prop3 = setInterval(__this.getFinished, 5000)
           console.log(__this.timerCount[0], __this.timerCount[1])
           __this.buttonStat = true
           
